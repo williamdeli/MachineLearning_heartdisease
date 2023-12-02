@@ -84,9 +84,6 @@ def heart():
         # Data df
     st.image('https://media.istockphoto.com/id/1210336572/id/foto/serangan-jantung-dan-penyakit-jantung.jpg?s=170667a&w=0&k=20&c=icnsTuCTLJ04C5yPZ_JjttoTmEMsgecOj9x7HVugFSo=', width=700)
     if st.sidebar.button("GO!"):
-        model_link = "https://drive.google.com/uc?id=1k6fhTvDvUN3-2LBgST8UVO_kDyxt2kj9"
-        model_path = "modelFinal.pkl"
-        gdown.download(model_link, model_path, quiet=False)
         df = input_df.copy()
         st.write(df)
         with open("modelFinal.pkl", "rb") as f:
@@ -95,8 +92,7 @@ def heart():
         result = ['No Heart Disease' if prediction == 0 else 'Heart Disease']
         with st.spinner('Wait for it...'):
             time.sleep(3)
-            st.success('This patient has {}'.format(result[0]))
-            st.balloons()
+            st.success('This patient has {}'.format(result[0]) )
 
 ############################################## UDAH MASUK KE WIDGET YA ########################################################################
 #Home page
