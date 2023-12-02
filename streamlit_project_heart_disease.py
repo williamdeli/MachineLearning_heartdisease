@@ -6,6 +6,9 @@ import numpy as np
 from PIL import Image
 import requests
 from io import BytesIO
+import subprocess
+scikit_learn_version = "1.2.2"
+subprocess.check_call(["pip", "install", f"scikit-learn=={scikit_learn_version}"])
 
 #page configuration
 st.set_page_config(
