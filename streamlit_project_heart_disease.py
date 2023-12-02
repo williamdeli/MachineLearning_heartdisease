@@ -93,7 +93,7 @@ def heart():
         gdown.download(model_link, model_path, quiet=False)
         df = input_df.copy()
         st.write(df)
-        with open(model_path, "rb") as f:
+        with open("modelFinal.pkl", "rb") as f:
             model = pickle.load(f)
         prediction = model.predict(df)
         result = ['No Heart Disease' if prediction == 0 else 'Heart Disease']
