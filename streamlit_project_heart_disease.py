@@ -4,8 +4,7 @@ import pickle
 import time
 import numpy as np
 from PIL import Image
-import requests
-from io import BytesIO
+import gdown
 import subprocess
 scikit_learn_version = "1.2.2"
 subprocess.check_call(["pip", "install", f"scikit-learn=={scikit_learn_version}"])
@@ -89,9 +88,12 @@ def heart():
         # Data df
     st.image('https://media.istockphoto.com/id/1210336572/id/foto/serangan-jantung-dan-penyakit-jantung.jpg?s=170667a&w=0&k=20&c=icnsTuCTLJ04C5yPZ_JjttoTmEMsgecOj9x7HVugFSo=', width=700)
     if st.sidebar.button("GO!"):
+        model_link = "https://drive.google.com/uc?id=1k6fhTvDvUN3-2LBgST8UVO_kDyxt2kj9"
+        model_path = "modelFinal.pkl"
+        gdown.download(model_link, model_path, quiet=False)
         df = input_df.copy()
         st.write(df)
-        with open("modelFinal.pkl", "rb") as f:
+        with open(model_path, "rb") as f:
             model = pickle.load(f)
         prediction = model.predict(df)
         result = ['No Heart Disease' if prediction == 0 else 'Heart Disease']
