@@ -91,8 +91,12 @@ def heart():
         prediction = model.predict(df)
         result = ['No Heart Disease' if prediction == 0 else 'Heart Disease']
         with st.spinner('Wait for it...'):
-            time.sleep(3)
-            st.success('This patient has {}'.format(result[0]) )
+            time.sleep(2)
+            if prediction == 0:
+                st.success('This patient has {}'.format(result[0]) )
+                st.balloons()
+            else:
+                st.error('This patient has {}'.format(result[0]) )
 
 ############################################## UDAH MASUK KE WIDGET YA ########################################################################
 #Home page
