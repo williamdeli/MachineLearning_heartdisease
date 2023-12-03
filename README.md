@@ -33,5 +33,6 @@ Jika Anda ingin mengembangkan aplikasi lebih lanjut, pertimbangkan untuk menamba
 - Menambahkan visualisasi untuk mendukung interpretasi hasil.
 - Meningkatkan antarmuka pengguna.
 
-## website dari aplikasi prediksi streamlit : https://prediction-heart-disease.streamlit.app/
+## website dari aplikasi prediksi streamlit
+link aplikasi prediction : https://prediction-heart-disease.streamlit.app/
 
