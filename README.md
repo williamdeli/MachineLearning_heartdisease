@@ -1,5 +1,5 @@
 # MachineLearning_heartdisease
-# Aplikasi Prediksi dengan Streamlit dan Model Random Forest
+# Aplikasi Prediksi dengan Streamlit Meggunakan Model Random Forest
 
 ## Deskripsi
 Aplikasi ini adalah implementasi sederhana dari model prediksi menggunakan Streamlit dan algoritma Random Forest. Aplikasi ini memungkinkan pengguna untuk memasukkan fitur-fitur tertentu dan memperoleh prediksi berdasarkan model Random Forest yang telah dilatih sebelumnya.
