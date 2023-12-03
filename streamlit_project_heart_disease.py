@@ -269,7 +269,7 @@ elif nav == "Exploratory Data Analysis":
     1. Feature `CA`: Memiliki 5 nilai dari rentang 0-4, maka dari itu nilai 4 diubah menjadi NaN (karena seharusnya tidak ada)
     2. Feature `thal`: Memiliki 4 nilai dari rentang 0-3, maka dari itu nulai 0 diubah menjadi NaN (karena seharusnya tidak ada)
     ''')
-    views = st.radio("Show Data", ("CA", "Thal"))
+    views = st.radio("Show Data CA and Thal", ("CA", "Thal"))
     if views == "CA":
         st.write('''
         **Feature CA**
@@ -281,7 +281,7 @@ elif nav == "Exploratory Data Analysis":
         **Show Data After Cleaning**
         ''')
         st.dataframe(df.ca.replace(4, np.nan).value_counts().to_frame().transpose())
-        st.write(''' Selebihnya mengenai data cleaning dapat dilihat pada pdf''')
+        
     elif views == "Thal":
         st.write('''
         **Feature Thal**
@@ -293,7 +293,94 @@ elif nav == "Exploratory Data Analysis":
         **Show Data After Cleaning**
         ''')
         st.dataframe(df.thal.replace(0, np.nan).value_counts().to_frame().transpose())
-        st.write(''' Selebihnya mengenai data cleaning dapat dilihat pada pdf''')
+        
+    st.write('''
+    Kita juga akan menggali informasi dari korelasi antar feature, berikut adalah hasil korelasi antar feature.
+    ''')
+    views_DR = st.radio("**Feature Selection and Feature extraction**", ("Correlation Value", "PCA"))
+    if views_DR == "Correlation Value":
+        st.write('''
+        **Correlation Value (Feature Selection)**
+        
+        Berikut adalah hasil korelasi antar feature.
+        ''')
+        st.dataframe(df.corr())
+        cor_matrix = df.corr()
+        st.write('''
+        Pengurutan korelasi antar feature terhadap target.
+        ''')
+        st.dataframe(cor_matrix['target'].sort_values())
+        st.write('''
+        Korelasi target(penyakit jantung) dengan variabel lainnya. 
+        Korelasi positif dengan variabel tertentu berarti semakin tinggi variabel tersebut maka akan semakin tinggi 
+        juga kemungkinan terkena penyakit jantung, sedangkan korelasi negatif ialah semakin rendah nilai variabel tersebut
+        maka kemungkinan terkena penyakit jantung lebih tinggi.
+
+        - `ca` -0.456989 (Korelasi Negatif Kuat)
+        - `oldpeak` -0.434108 (Korelasi Negatif Kuat)
+        - `exang` -0.431599 (Korelasi Negatif Kuat)
+        - `thal` -0.370759 (Korelasi Negatif Kuat)
+        - `sex` -0.318896 (Korelasi Negatif Kuat)
+        - `age` -0.222416 (Korelasi Negatif)
+        - `trestbps` -0.115614 (Korelasi Negatif Lemah)
+        - `chol` -0.0105627 (Korelasi Negatif Lemah)
+        - `fbs` 0.027210 (Korelasi Positif Lemah)
+        - `restecg` 0.171453 (Korelasi Positif Lemah)
+        - `slope` 0.326473 (korelasi Positif Kuat)
+        - `cp` 0.422559 (korelasi Positif Kuat)
+        - `thalach` 0.432211 (korelasi Positif Kuat)
+
+        Jadi, dari data korelasi diatas faktor yang paling berpengaruh terhadap penyakit jantung ialah, sebagai berikut:
+
+        - `ca` (semakin banyak major vessels, maka akan semakin tinggi resiko terkena penyakit jantung)
+        - `oldpeak` (Semakin rendah depresi ST yang disebabkan oleh latihan relatif terhadap istirahat, maka resiko terkena penyakit jantung akan semakin tinggi)
+        - `exang` (Apibila exercise induced angina rendah, maka resiko terkena penyakit jantung akan semakin tinggi)
+        - `thal` (semakin rendah tipe jenis defek jantung, maka resiko terkena penyakit jantung semakin tinggi)
+        - `sex` (Perempuan memiliki resiko terkena penyakit jantung lebih tinggi dibandingkan laki-laki)
+        - `age` (semakin muda umur, ternyata semakin tinggi terkena penyakit jantung)
+        - `slope` (Semakin tinggi kemiringan segmen latihan ST maka, resiko terkena penyakit jantung semakin tinggi)
+        - `cp` (Semakin tinggi tipe Jenis rasa sakit pada dada, maka resiko terkena penyakit jantung semakin tinggi)
+        - `thalach` (semakin tinggi detak jantung maksimum yang dicapai pasien selama tes latihan, maka resiko terkena penyakit jantung semakin tinggi)
+        ''')
+        st.write('''
+        **Correlation Heatmap**
+        
+        Berikut adalah hasil korelasi antar feature.
+        ''')
+        st.image("https://drive.google.com/uc?id=1cFri-3vAHWqj0HCsCZNksarhw5QaUkTZ", width=700)
+        st.write('''
+        **Kesimpulan :**
+
+        1) 'cp', 'thalach', dan 'slope' berkorelasi positif cukup kuat dengan 'target'.
+
+        2) 'oldpeak', 'exang', 'ca', 'thal', 'sex', dan 'age' berkorelasi cukup kuat dengan 'target'.
+
+        3) 'fbs', 'chol', 'trestbps', dan 'restecg' memiliki korelasi yang lemah dengan 'target'.
+
+        Feature yang dipilih yaitu: 'cp', 'thalach', 'slope', 'oldpeak', 'exang', 'ca', 'thal', 'sex', dan 'age' untuk dianalisa lebih lanjut.
+        ''')
+    elif views_DR == "PCA":
+        st.write('''**PCA (Feature Extraction)** 
+        Sebelum melakukan PCA, kita akan melakukan scaling terlebih dahulu. Karena PCA membutuhkan data yang sudah di scaling.
+        sesudah itu kita akan membuat eigen value analysis dan Cumulative Explained Variance untuk mengetahui berapa banyak komponen yang akan kita gunakan.
+        ''')
+        st.write('''**Graph cummulative explained variance**''')
+        st.image("https://drive.google.com/uc?id=1Rv5nCXEeeCDesOPjRJlmh4uLtt-iSfZB", width=700)
+        st.write('''Dari plot, kita dapat melihat bahwa 9 komponen utama pertama menjelaskan sekitar 90% variasi. Berdasarkan grafik ini, 
+        kita dapat memutuskan berapa banyak komponen utama yang ingin kita miliki tergantung pada variabilitas yang dijelaskan.''')
+        st.write('''**Eigen Value Analysis**''')
+        st.image("https://drive.google.com/uc?id=1s43MppdOHSbwuJgsIqc1B4-htbNPqDyq", width=700)
+        st.write('''Pada awalnya, setiap komponen utama memberikan kontribusi yang signifikan terhadap total varians. 
+        Namun, saat Anda bergerak ke komponen utama berikutnya, penurunan dalam varians yang dijelaskan oleh setiap komponen mungkin mulai berkurang.
+        Poin "patah" atau "puncak" pada Scree Plot menunjukkan titik di mana penurunan ini melambat secara signifikan, 
+        dan komponen berikutnya memberikan kontribusi yang lebih kecil terhadap total varians''')
+
+    st.write('''
+    ***Kesimpulan :***
+    Dimensi Reduksi yang dipilih adalah 9 dimensi, karena pada feature selection / feature extraction
+    9 dimensi tersebut dapat menjelaskan 90% varians dari data yang ada dan memiliki korelasi yang cukup kuat dengan target.
+    ''')
+
 
 elif nav == "Modelling":
     st.header("Modelling")
