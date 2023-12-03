@@ -336,7 +336,7 @@ elif nav == "Modelling":
         st.write('''
         **ROC-AUC**
         
-        Berikut adalah hasil ROC-AUC dari model sebelum dan setelah dilakukan tuning.
+        Berikut adalah hasil ROC-AUC dari model setelah dilakukan tuning.
         ''')
         image_url = "https://drive.google.com/uc?id=1LMIv3O4QdBgLV6BLLmLpCMSALN9AkVDn"
         # Display the image using st.image
