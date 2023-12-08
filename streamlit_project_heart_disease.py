@@ -164,7 +164,10 @@ elif nav == "Dataset":
         - 2: datar
         - 3: turun
     12. `ca` : jumlah pembuluh darah utama (0-3) yang diwarnai dengan flourosopy
-    13. `thal` : 3 = normal; 6 = cacat tetap; 7 = cacat yang dapat dibalik
+    13. `thal` : variabel ini merepresentasikan hasil tes thalium scan dengan 3 nilai kategori yang mungkin:
+        - thal 1: menunjukkan kondisi normal.
+        - thal 2: menunjukkan adanya defek tetap pada thalassemia.
+        - thal 3: menunjukkan adanya defek yang dapat dipulihkan pada thalassemia.
     14. `target` : memiliki penyakit jantung atau tidak (1 = yes; 0 = no)
     ''')
     # show dataset
