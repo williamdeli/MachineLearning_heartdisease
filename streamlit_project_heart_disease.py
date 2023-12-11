@@ -396,7 +396,7 @@ elif nav == "Dataset":
 
 elif nav == "Modelling":
     st.header("Modelling")
-    var = st.selectbox("Select a model", ("Before Tuning", "Before Tuning with Smote","After Tuning","After Tuning With Smote", "Roc-Auc", "Tresholds", "Kesimpulan"))
+    var = st.selectbox("Select a model", ("Before Tuning without Smote", "Before Tuning with Smote","After Tuning without Smote","After Tuning With Smote", "Roc-Auc", "Tresholds", "Kesimpulan"))
     if var == "Before Tuning without Smote":
         accuracy_score_nosm = {
             'Logistic Regression': 0.8070175438596491,
