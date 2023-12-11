@@ -484,13 +484,13 @@ elif nav == "Modelling":
         
         Berikut adalah hasil treshold terbaik dari model Logistic Regression, Decision Tree, Random Forest, dan MLP.
         ''')
-        image_url = "https://drive.google.com/uc?id=1qEqaYUZfHYAl0W8xj44F5FKMLhtdKLQT"
+        image_url = "https://drive.google.com/uc?id=1c2uFrD9VKymi1B_ZdZfRHJlF2WwTLb3g"
         
         # Display the image using st.image
         st.image(image_url, width=700)
         st.write('''
         Karena pada kasus ini kita ingin memprediksi mengurangi kesalahan dalam memprediksi kasus negatif sebagai positif (False Positive), 
-        maka kita akan memilih treshold yang lebih tinggi yaitu Random Forest dengan treshold 0.42. 
+        maka kita akan memilih treshold yang lebih tinggi yaitu Random Forest dengan treshold 0.52. 
         Namun, ini dapat mengurangi sensitivitas model (menyebabkan lebih banyak True Negative yang salah diprediksi negatif)
         ''')
 
