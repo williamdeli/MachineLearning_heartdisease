@@ -396,7 +396,7 @@ elif nav == "Dataset":
 
 elif nav == "Modelling":
     st.header("Modelling")
-    var = st.selectbox("Select a model", ("Before Tuning without Smote", "Before Tuning with Smote","After Tuning without Smote","After Tuning With Smote", "Roc-Auc", "Tresholds", "Kesimpulan"))
+    var = st.selectbox("Select a model", ("Before Tuning without Smote", "Before Tuning with Smote","After Tuning without Smote","After Tuning with Smote", "Roc-Auc", "Tresholds", "Kesimpulan"))
     if var == "Before Tuning without Smote":
         accuracy_score_nosm = {
             'Logistic Regression': 0.8070175438596491,
@@ -431,7 +431,7 @@ elif nav == "Modelling":
         Berdasarkan hasil akurasi dari model sebelum dilakukan tuning tapi menggunakan SMOTE, dapat dilihat bahwa model dengan akurasi tertinggi
         adalah decision tree dengan akurasi 0.8245614035087719
         ''')
-    elif var == "After Tuning Without Smote":
+    elif var == "After Tuning without Smote":
         accuracy_score_nosm_tune = {
             'Logistic Regression': 0.8070175438596491,
             'Decision Tree': 0.7543859649122807,
