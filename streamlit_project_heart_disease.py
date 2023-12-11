@@ -3,7 +3,15 @@ import pandas as pd
 import pickle
 import time
 import numpy as np
+import sklearn
 from PIL import Image
+
+
+import requests
+from io import BytesIO
+# import subprocess
+# scikit_learn_version = "1.2.2"
+# subprocess.check_call(["pip", "install", f"scikit-learn=={scikit_learn_version}"])
 
 #page configuration
 st.set_page_config(
@@ -91,12 +99,13 @@ def heart():
         prediction = model.predict(df)
         result = ['No Heart Disease' if prediction == 0 else 'Heart Disease']
         with st.spinner('Wait for it...'):
-            time.sleep(2)
+            time.sleep(3)
             if prediction == 0:
                 st.success('This patient has {}'.format(result[0]) )
                 st.balloons()
             else:
                 st.error('This patient has {}'.format(result[0]) )
+            
 
 ############################################## UDAH MASUK KE WIDGET YA ########################################################################
 #Home page
@@ -164,10 +173,7 @@ elif nav == "Dataset":
         - 2: datar
         - 3: turun
     12. `ca` : jumlah pembuluh darah utama (0-3) yang diwarnai dengan flourosopy
-    13. `thal` : variabel ini merepresentasikan hasil tes thalium scan dengan 3 nilai kategori yang mungkin:
-        - thal 1: menunjukkan kondisi normal.
-        - thal 2: menunjukkan adanya defek tetap pada thalassemia.
-        - thal 3: menunjukkan adanya defek yang dapat dipulihkan pada thalassemia.
+    13. `thal` : 3 = normal; 6 = cacat tetap; 7 = cacat yang dapat dibalik
     14. `target` : memiliki penyakit jantung atau tidak (1 = yes; 0 = no)
     ''')
     # show dataset
@@ -261,136 +267,136 @@ elif nav == "Dataset":
         st.write('Persentase antara kemiringan segmen ST latihan puncak 0 (Naik), 1 (Datar), dan 2 (Turun) ', df.slope.value_counts()/len(df) * 100)
 
 
-elif nav == "Exploratory Data Analysis":
-    st.header("Exploratory Data Analysis")
-    st.write('''
-    **Data Cleaning**
+    elif nav == "Exploratory Data Analysis":
+        st.header("Exploratory Data Analysis")
+        st.write('''
+        **Data Cleaning**
 
-    Pada tahap ini kita akan melakukan data cleaning, data cleaning adalah proses mengubah data mentah menjadi data yang dapat digunakan untuk analisis.
-    contohnya melakukan pengecekan terhadap missing value, duplikasi, outlier, korelasi dan sebagainya. Jika terdapat data yang
-    kosong, maka data tersebut akan dihapus atau diisi dengan nilai lain. Jika terdapat data yang duplikat, maka data tersebut 
-    akan dihapus. Jika terdapat data yang outlier, maka data tersebut akan dihapus atau menggunakan teknik np.log.
-    ''')
-    st.write('''
-    Informasi yang akan kita gali adalah feature pada kesalahan penulisan:
-    1. Feature `CA`: Memiliki 5 nilai dari rentang 0-4, maka dari itu nilai 4 diubah menjadi NaN (karena seharusnya tidak ada)
-    2. Feature `thal`: Memiliki 4 nilai dari rentang 0-3, maka dari itu nulai 0 diubah menjadi NaN (karena seharusnya tidak ada)
-    ''')
-    views = st.radio("Show Data CA and Thal", ("CA", "Thal"))
-    if views == "CA":
-        st.write('''
-        **Feature CA**
-        
-        Feature CA memiliki 5 nilai dari rentang 0-4, maka dari itu nilai 4 diubah menjadi NaN (karena seharusnya tidak ada)
-        ''')
-        st.dataframe(df.ca.value_counts().to_frame().transpose())
-        st.write('''
-        **Show Data After Cleaning**
-        ''')
-        st.dataframe(df.ca.replace(4, np.nan).value_counts().to_frame().transpose())
-        
-    elif views == "Thal":
-        st.write('''
-        **Feature Thal**
-        
-        Feature Thal memiliki 4 nilai dari rentang 0-3, maka dari itu nulai 0 diubah menjadi NaN (karena seharusnya tidak ada)
-        ''')
-        st.dataframe(df.thal.value_counts().to_frame().transpose())
-        st.write('''
-        **Show Data After Cleaning**
-        ''')
-        st.dataframe(df.thal.replace(0, np.nan).value_counts().to_frame().transpose())
-        
-    st.write('''
-    Kita juga akan menggali informasi dari korelasi antar feature, berikut adalah hasil korelasi antar feature.
-    ''')
-    views_DR = st.radio("**Feature Selection and Feature extraction**", ("Correlation Value", "PCA"))
-    if views_DR == "Correlation Value":
-        st.write('''
-        **Correlation Value (Feature Selection)**
-        
-        Berikut adalah hasil korelasi antar feature.
-        ''')
-        st.dataframe(df.corr())
-        cor_matrix = df.corr()
-        st.write('''
-        Pengurutan korelasi antar feature terhadap target.
-        ''')
-        st.dataframe(cor_matrix['target'].sort_values())
-        st.write('''
-        Korelasi target(penyakit jantung) dengan variabel lainnya. 
-        Korelasi positif dengan variabel tertentu berarti semakin tinggi variabel tersebut maka akan semakin tinggi 
-        juga kemungkinan terkena penyakit jantung, sedangkan korelasi negatif ialah semakin rendah nilai variabel tersebut
-        maka kemungkinan terkena penyakit jantung lebih tinggi.
-
-        - `ca` -0.456989 (Korelasi Negatif Kuat)
-        - `oldpeak` -0.434108 (Korelasi Negatif Kuat)
-        - `exang` -0.431599 (Korelasi Negatif Kuat)
-        - `thal` -0.370759 (Korelasi Negatif Kuat)
-        - `sex` -0.318896 (Korelasi Negatif Kuat)
-        - `age` -0.222416 (Korelasi Negatif)
-        - `trestbps` -0.115614 (Korelasi Negatif Lemah)
-        - `chol` -0.0105627 (Korelasi Negatif Lemah)
-        - `fbs` 0.027210 (Korelasi Positif Lemah)
-        - `restecg` 0.171453 (Korelasi Positif Lemah)
-        - `slope` 0.326473 (korelasi Positif Kuat)
-        - `cp` 0.422559 (korelasi Positif Kuat)
-        - `thalach` 0.432211 (korelasi Positif Kuat)
-
-        Jadi, dari data korelasi diatas faktor yang paling berpengaruh terhadap penyakit jantung ialah, sebagai berikut:
-
-        - `ca` (semakin banyak major vessels, maka akan semakin tinggi resiko terkena penyakit jantung)
-        - `oldpeak` (Semakin rendah depresi ST yang disebabkan oleh latihan relatif terhadap istirahat, maka resiko terkena penyakit jantung akan semakin tinggi)
-        - `exang` (Apibila exercise induced angina rendah, maka resiko terkena penyakit jantung akan semakin tinggi)
-        - `thal` (semakin rendah tipe jenis defek jantung, maka resiko terkena penyakit jantung semakin tinggi)
-        - `sex` (Perempuan memiliki resiko terkena penyakit jantung lebih tinggi dibandingkan laki-laki)
-        - `age` (semakin muda umur, ternyata semakin tinggi terkena penyakit jantung)
-        - `slope` (Semakin tinggi kemiringan segmen latihan ST maka, resiko terkena penyakit jantung semakin tinggi)
-        - `cp` (Semakin tinggi tipe Jenis rasa sakit pada dada, maka resiko terkena penyakit jantung semakin tinggi)
-        - `thalach` (semakin tinggi detak jantung maksimum yang dicapai pasien selama tes latihan, maka resiko terkena penyakit jantung semakin tinggi)
+        Pada tahap ini kita akan melakukan data cleaning, data cleaning adalah proses mengubah data mentah menjadi data yang dapat digunakan untuk analisis.
+        contohnya melakukan pengecekan terhadap missing value, duplikasi, outlier, korelasi dan sebagainya. Jika terdapat data yang
+        kosong, maka data tersebut akan dihapus atau diisi dengan nilai lain. Jika terdapat data yang duplikat, maka data tersebut 
+        akan dihapus. Jika terdapat data yang outlier, maka data tersebut akan dihapus atau menggunakan teknik np.log.
         ''')
         st.write('''
-        **Correlation Heatmap**
-        
-        Berikut adalah hasil korelasi antar feature.
+        Informasi yang akan kita gali adalah feature pada kesalahan penulisan:
+        1. Feature `CA`: Memiliki 5 nilai dari rentang 0-4, maka dari itu nilai 4 diubah menjadi NaN (karena seharusnya tidak ada)
+        2. Feature `thal`: Memiliki 4 nilai dari rentang 0-3, maka dari itu nulai 0 diubah menjadi NaN (karena seharusnya tidak ada)
         ''')
-        st.image("https://drive.google.com/uc?id=1cFri-3vAHWqj0HCsCZNksarhw5QaUkTZ", width=700)
+        views = st.radio("Show Data CA and Thal", ("CA", "Thal"))
+        if views == "CA":
+            st.write('''
+            **Feature CA**
+            
+            Feature CA memiliki 5 nilai dari rentang 0-4, maka dari itu nilai 4 diubah menjadi NaN (karena seharusnya tidak ada)
+            ''')
+            st.dataframe(df.ca.value_counts().to_frame().transpose())
+            st.write('''
+            **Show Data After Cleaning**
+            ''')
+            st.dataframe(df.ca.replace(4, np.nan).value_counts().to_frame().transpose())
+            
+        elif views == "Thal":
+            st.write('''
+            **Feature Thal**
+            
+            Feature Thal memiliki 4 nilai dari rentang 0-3, maka dari itu nulai 0 diubah menjadi NaN (karena seharusnya tidak ada)
+            ''')
+            st.dataframe(df.thal.value_counts().to_frame().transpose())
+            st.write('''
+            **Show Data After Cleaning**
+            ''')
+            st.dataframe(df.thal.replace(0, np.nan).value_counts().to_frame().transpose())
+            
         st.write('''
-        **Kesimpulan :**
-
-        1) 'cp', 'thalach', dan 'slope' berkorelasi positif cukup kuat dengan 'target'.
-
-        2) 'oldpeak', 'exang', 'ca', 'thal', 'sex', dan 'age' berkorelasi cukup kuat dengan 'target'.
-
-        3) 'fbs', 'chol', 'trestbps', dan 'restecg' memiliki korelasi yang lemah dengan 'target'.
-
-        Feature yang dipilih yaitu: 'cp', 'thalach', 'slope', 'oldpeak', 'exang', 'ca', 'thal', 'sex', dan 'age' untuk dianalisa lebih lanjut.
+        Kita juga akan menggali informasi dari korelasi antar feature, berikut adalah hasil korelasi antar feature.
         ''')
-    elif views_DR == "PCA":
-        st.write('''**PCA (Feature Extraction)** 
-        Sebelum melakukan PCA, kita akan melakukan scaling terlebih dahulu. Karena PCA membutuhkan data yang sudah di scaling.
-        sesudah itu kita akan membuat eigen value analysis dan Cumulative Explained Variance untuk mengetahui berapa banyak komponen yang akan kita gunakan.
+        views_DR = st.radio("**Feature Selection and Feature extraction**", ("Correlation Value", "PCA"))
+        if views_DR == "Correlation Value":
+            st.write('''
+            **Correlation Value (Feature Selection)**
+            
+            Berikut adalah hasil korelasi antar feature.
+            ''')
+            st.dataframe(df.corr())
+            cor_matrix = df.corr()
+            st.write('''
+            Pengurutan korelasi antar feature terhadap target.
+            ''')
+            st.dataframe(cor_matrix['target'].sort_values())
+            st.write('''
+            Korelasi target(penyakit jantung) dengan variabel lainnya. 
+            Korelasi positif dengan variabel tertentu berarti semakin tinggi variabel tersebut maka akan semakin tinggi 
+            juga kemungkinan terkena penyakit jantung, sedangkan korelasi negatif ialah semakin rendah nilai variabel tersebut
+            maka kemungkinan terkena penyakit jantung lebih tinggi.
+
+            - `ca` -0.456989 (Korelasi Negatif Kuat)
+            - `oldpeak` -0.434108 (Korelasi Negatif Kuat)
+            - `exang` -0.431599 (Korelasi Negatif Kuat)
+            - `thal` -0.370759 (Korelasi Negatif Kuat)
+            - `sex` -0.318896 (Korelasi Negatif Kuat)
+            - `age` -0.222416 (Korelasi Negatif)
+            - `trestbps` -0.115614 (Korelasi Negatif Lemah)
+            - `chol` -0.0105627 (Korelasi Negatif Lemah)
+            - `fbs` 0.027210 (Korelasi Positif Lemah)
+            - `restecg` 0.171453 (Korelasi Positif Lemah)
+            - `slope` 0.326473 (korelasi Positif Kuat)
+            - `cp` 0.422559 (korelasi Positif Kuat)
+            - `thalach` 0.432211 (korelasi Positif Kuat)
+
+            Jadi, dari data korelasi diatas faktor yang paling berpengaruh terhadap penyakit jantung ialah, sebagai berikut:
+
+            - `ca` (semakin banyak major vessels, maka akan semakin tinggi resiko terkena penyakit jantung)
+            - `oldpeak` (Semakin rendah depresi ST yang disebabkan oleh latihan relatif terhadap istirahat, maka resiko terkena penyakit jantung akan semakin tinggi)
+            - `exang` (Apibila exercise induced angina rendah, maka resiko terkena penyakit jantung akan semakin tinggi)
+            - `thal` (semakin rendah tipe jenis defek jantung, maka resiko terkena penyakit jantung semakin tinggi)
+            - `sex` (Perempuan memiliki resiko terkena penyakit jantung lebih tinggi dibandingkan laki-laki)
+            - `age` (semakin muda umur, ternyata semakin tinggi terkena penyakit jantung)
+            - `slope` (Semakin tinggi kemiringan segmen latihan ST maka, resiko terkena penyakit jantung semakin tinggi)
+            - `cp` (Semakin tinggi tipe Jenis rasa sakit pada dada, maka resiko terkena penyakit jantung semakin tinggi)
+            - `thalach` (semakin tinggi detak jantung maksimum yang dicapai pasien selama tes latihan, maka resiko terkena penyakit jantung semakin tinggi)
+            ''')
+            st.write('''
+            **Correlation Heatmap**
+            
+            Berikut adalah hasil korelasi antar feature.
+            ''')
+            st.image("https://drive.google.com/uc?id=1cFri-3vAHWqj0HCsCZNksarhw5QaUkTZ", width=700)
+            st.write('''
+            **Kesimpulan :**
+
+            1) 'cp', 'thalach', dan 'slope' berkorelasi positif cukup kuat dengan 'target'.
+
+            2) 'oldpeak', 'exang', 'ca', 'thal', 'sex', dan 'age' berkorelasi cukup kuat dengan 'target'.
+
+            3) 'fbs', 'chol', 'trestbps', dan 'restecg' memiliki korelasi yang lemah dengan 'target'.
+
+            Feature yang dipilih yaitu: 'cp', 'thalach', 'slope', 'oldpeak', 'exang', 'ca', 'thal', 'sex', dan 'age' untuk dianalisa lebih lanjut.
+            ''')
+        elif views_DR == "PCA":
+            st.write('''**PCA (Feature Extraction)** 
+            Sebelum melakukan PCA, kita akan melakukan scaling terlebih dahulu. Karena PCA membutuhkan data yang sudah di scaling.
+            sesudah itu kita akan membuat eigen value analysis dan Cumulative Explained Variance untuk mengetahui berapa banyak komponen yang akan kita gunakan.
+            ''')
+            st.write('''**Graph cummulative explained variance**''')
+            st.image("https://drive.google.com/uc?id=1Rv5nCXEeeCDesOPjRJlmh4uLtt-iSfZB", width=700)
+            st.write('''Dari plot, kita dapat melihat bahwa 9 komponen utama pertama menjelaskan sekitar 90% variasi. Berdasarkan grafik ini, 
+            kita dapat memutuskan berapa banyak komponen utama yang ingin kita miliki tergantung pada variabilitas yang dijelaskan.''')
+            st.write('''**Eigen Value Analysis**''')
+            st.image("https://drive.google.com/uc?id=1s43MppdOHSbwuJgsIqc1B4-htbNPqDyq", width=700)
+            st.write('''Pada awalnya, setiap komponen utama memberikan kontribusi yang signifikan terhadap total varians. 
+            Namun, saat Anda bergerak ke komponen utama berikutnya, penurunan dalam varians yang dijelaskan oleh setiap komponen mungkin mulai berkurang.
+            Poin "patah" atau "puncak" pada Scree Plot menunjukkan titik di mana penurunan ini melambat secara signifikan, 
+            dan komponen berikutnya memberikan kontribusi yang lebih kecil terhadap total varians''')
+
+        st.write('''
+        ***Kesimpulan :***
+        Dimensi Reduksi yang dipilih adalah 9 dimensi, karena pada feature selection / feature extraction
+        9 dimensi tersebut dapat menjelaskan 90% varians dari data yang ada dan memiliki korelasi yang cukup kuat dengan target.
         ''')
-        st.write('''**Graph cummulative explained variance**''')
-        st.image("https://drive.google.com/uc?id=1Rv5nCXEeeCDesOPjRJlmh4uLtt-iSfZB", width=700)
-        st.write('''Dari plot, kita dapat melihat bahwa 9 komponen utama pertama menjelaskan sekitar 90% variasi. Berdasarkan grafik ini, 
-        kita dapat memutuskan berapa banyak komponen utama yang ingin kita miliki tergantung pada variabilitas yang dijelaskan.''')
-        st.write('''**Eigen Value Analysis**''')
-        st.image("https://drive.google.com/uc?id=1s43MppdOHSbwuJgsIqc1B4-htbNPqDyq", width=700)
-        st.write('''Pada awalnya, setiap komponen utama memberikan kontribusi yang signifikan terhadap total varians. 
-        Namun, saat Anda bergerak ke komponen utama berikutnya, penurunan dalam varians yang dijelaskan oleh setiap komponen mungkin mulai berkurang.
-        Poin "patah" atau "puncak" pada Scree Plot menunjukkan titik di mana penurunan ini melambat secara signifikan, 
-        dan komponen berikutnya memberikan kontribusi yang lebih kecil terhadap total varians''')
-
-    st.write('''
-    ***Kesimpulan :***
-    Dimensi Reduksi yang dipilih adalah 9 dimensi, karena pada feature selection / feature extraction
-    9 dimensi tersebut dapat menjelaskan 90% varians dari data yang ada dan memiliki korelasi yang cukup kuat dengan target.
-    ''')
-
 
 elif nav == "Modelling":
     st.header("Modelling")
+    var = st.selectbox("Select a model", ("Before Tuning", "After Tuning", "Roc-Auc", "Tresholds", "Kesimpulan"))
     var = st.selectbox("Select a model", ("Before Tuning", "Before Tuning with Smote","After Tuning","After Tuning With Smote", "Roc-Auc", "Tresholds", "Kesimpulan"))
     if var == "Before Tuning without Smote":
         accuracy_score_nosm = {
@@ -409,7 +415,7 @@ elif nav == "Modelling":
         Berdasarkan hasil akurasi dari model sebelum dilakukan tuning, dapat dilihat bahwa model dengan akurasi tertinggi
         adalah Logistic Regression dan random forest dengan akurasi 0.8070175438596491
         ''') 
-     elif var == "Before Tuning with Smote":
+    elif var == "Before Tuning with Smote":
         accuracy_score_sm = {
             'Logistic Regression': 0.7894736842105263,
             'Decision Tree':  0.8245614035087719,
@@ -464,7 +470,7 @@ elif nav == "Modelling":
         st.write('''
         **ROC-AUC**
         
-        Berikut adalah hasil ROC-AUC dari model setelah dilakukan tuning.
+        Berikut adalah hasil ROC-AUC dari model sebelum dan setelah dilakukan tuning.
         ''')
         image_url = "https://drive.google.com/uc?id=1LMIv3O4QdBgLV6BLLmLpCMSALN9AkVDn"
         # Display the image using st.image
@@ -479,20 +485,13 @@ elif nav == "Modelling":
         
         Berikut adalah hasil treshold terbaik dari model Logistic Regression, Decision Tree, Random Forest, dan MLP.
         ''')
-        image_url = "https://drive.google.com/uc?id=1HzsOqBbHBEV6beQ1SqnWh4ySQ9p1DX32"
-        image_url_2 = "https://drive.google.com/uc?id=1HzsOqBbHBEV6beQ1SqnWh4ySQ9p1DX32"
+        image_url = "https://drive.google.com/uc?id=1qEqaYUZfHYAl0W8xj44F5FKMLhtdKLQT"
+        
         # Display the image using st.image
-        st.write('''
-        Berikut adalah treshold dari models)
-        ''')
         st.image(image_url, width=700)
         st.write('''
-        Berikut adalah best treshold dari models)
-        ''')
-        st.image(image_url_2, width=700)
-        st.write('''
         Karena pada kasus ini kita ingin memprediksi mengurangi kesalahan dalam memprediksi kasus negatif sebagai positif (False Positive), 
-        maka kita akan memilih treshold yang lebih tinggi yaitu Random Forest dengan treshold 0.52. 
+        maka kita akan memilih treshold yang lebih tinggi yaitu Random Forest dengan treshold 0.42. 
         Namun, ini dapat mengurangi sensitivitas model (menyebabkan lebih banyak True Negative yang salah diprediksi negatif)
         ''')
 
