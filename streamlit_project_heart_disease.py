@@ -391,40 +391,74 @@ elif nav == "Exploratory Data Analysis":
 
 elif nav == "Modelling":
     st.header("Modelling")
-    var = st.selectbox("Select a model", ("Before Tuning", "After Tuning", "Roc-Auc", "Tresholds", "Kesimpulan"))
-    if var == "Before Tuning":
-        accuracy_score = {
-            'Logistic Regression': 0.8245614035087719,
-            'Decision Tree': 0.7017543859649122,
+    var = st.selectbox("Select a model", ("Before Tuning", "Before Tuning with Smote","After Tuning","After Tuning With Smote", "Roc-Auc", "Tresholds", "Kesimpulan"))
+    if var == "Before Tuning without Smote":
+        accuracy_score_nosm = {
+            'Logistic Regression': 0.8070175438596491,
+            'Decision Tree': 0.7543859649122807,
             'Random Forest': 0.8070175438596491,
-            'MLP Classifier': 0.8070175438596491,
+            'MLP Classifier': 0.7719298245614035,
         }
         st.write('''
         **Model Before Tuning**
         
-        Berikut adalah hasil akurasi dari model sebelum dilakukan tuning.
+        Berikut adalah hasil akurasi dari model sebelum dilakukan tuning tanpa SMOTE.
         ''')
-        st.dataframe(pd.DataFrame(accuracy_score.items(), columns=['Model', 'Accuracy Score']))
+        st.dataframe(pd.DataFrame(accuracy_score_nosm.items(), columns=['Model', 'Accuracy Score']))
         st.write('''
         Berdasarkan hasil akurasi dari model sebelum dilakukan tuning, dapat dilihat bahwa model dengan akurasi tertinggi
-        adalah Logistic Regression dengan akurasi 0.8246.
+        adalah Logistic Regression dan random forest dengan akurasi 0.8070175438596491
         ''') 
-    elif var == "After Tuning":
-        accuracy_score = {
-            'Logistic Regression': 0.8245614035087719,
-            'Decision Tree': 0.7543859649122807,
-            'Random Forest': 0.8596491228070176,
-            'MLP Classifier': 0.8245614035087719,
+     elif var == "Before Tuning with Smote":
+        accuracy_score_sm = {
+            'Logistic Regression': 0.7894736842105263,
+            'Decision Tree':  0.8245614035087719,
+            'Random Forest': 0.8245614035087719,
+            'MLP Classifier': 0.7894736842105263,
         }
         st.write('''
-        **Model After Tuning**
+        **Model Before Tuning With Smote**
         
-        Berikut adalah hasil akurasi dari model setelah dilakukan tuning.
+        Berikut adalah hasil akurasi dari model sebelum dilakukan tuning menggunakan SMOTE.
+        ''')
+        st.dataframe(pd.DataFrame(accuracy_score_sm.items(), columns=['Model', 'Accuracy Score']))
+        st.write('''
+        Berdasarkan hasil akurasi dari model sebelum dilakukan tuning tapi menggunakan SMOTE, dapat dilihat bahwa model dengan akurasi tertinggi
+        adalah decision tree dengan akurasi 0.8245614035087719
+        ''')
+    elif var == "After Tuning Without Smote":
+        accuracy_score_nosm_tune = {
+            'Logistic Regression': 0.8070175438596491,
+            'Decision Tree': 0.7543859649122807,
+            'Random Forest': 0.8596491228070176,
+            'MLP Classifier': 0.8421052631578947,
+        }
+        st.write('''
+        **Model After Tuning without Smote**
+        
+        Berikut adalah hasil akurasi dari model setelah dilakukan tuning tanpa menggunakan SMOTE.
         ''')
         st.dataframe(pd.DataFrame(accuracy_score.items(), columns=['Model', 'Accuracy Score']))
         st.write('''
         Berdasarkan hasil akurasi dari model setelah dilakukan tuning, dapat dilihat bahwa model dengan akurasi tertinggi
-        adalah Random Forest dengan akurasi 0.86.
+        adalah Random Forest dengan akurasi 0.8596491228070176.
+        ''')
+    elif var == "After Tuning with Smote":
+        accuracy_score = {
+            'Logistic Regression': 0.7894736842105263,
+            'Decision Tree': 0.6842105263157895,
+            'Random Forest': 0.7894736842105263,
+            'MLP Classifier': 0.8070175438596491,
+        }
+        st.write('''
+        **Model After Tuning with SMOTE**
+        
+        Berikut adalah hasil akurasi dari model setelah dilakukan tuning tapi menggunakan SMOTE.
+        ''')
+        st.dataframe(pd.DataFrame(accuracy_score.items(), columns=['Model', 'Accuracy Score']))
+        st.write('''
+        Berdasarkan hasil akurasi dari model setelah dilakukan tuning menggunakan smote, dapat dilihat bahwa model dengan akurasi tertinggi
+        adalah MLP dengan akurasi 0.8070175438596491.
         ''')
     elif var == "Roc-Auc":
         st.write('''
@@ -445,13 +479,20 @@ elif nav == "Modelling":
         
         Berikut adalah hasil treshold terbaik dari model Logistic Regression, Decision Tree, Random Forest, dan MLP.
         ''')
-        image_url = "https://drive.google.com/uc?id=1qEqaYUZfHYAl0W8xj44F5FKMLhtdKLQT"
-        
+        image_url = "https://drive.google.com/uc?id=1HzsOqBbHBEV6beQ1SqnWh4ySQ9p1DX32"
+        image_url_2 = "https://drive.google.com/uc?id=1HzsOqBbHBEV6beQ1SqnWh4ySQ9p1DX32"
         # Display the image using st.image
+        st.write('''
+        Berikut adalah treshold dari models)
+        ''')
         st.image(image_url, width=700)
         st.write('''
+        Berikut adalah best treshold dari models)
+        ''')
+        st.image(image_url_2, width=700)
+        st.write('''
         Karena pada kasus ini kita ingin memprediksi mengurangi kesalahan dalam memprediksi kasus negatif sebagai positif (False Positive), 
-        maka kita akan memilih treshold yang lebih tinggi yaitu Random Forest dengan treshold 0.42. 
+        maka kita akan memilih treshold yang lebih tinggi yaitu Random Forest dengan treshold 0.52. 
         Namun, ini dapat mengurangi sensitivitas model (menyebabkan lebih banyak True Negative yang salah diprediksi negatif)
         ''')
 
