@@ -340,8 +340,8 @@ elif nav == "Exploratory Data Analysis":
         - `fbs` 0.027210 (Korelasi Positif Lemah)
         - `restecg` 0.171453 (Korelasi Positif Lemah)
         - `slope` 0.326473 (korelasi Positif Kuat)
-         - `cp` 0.422559 (korelasi Positif Kuat)
-         - `thalach` 0.432211 (korelasi Positif Kuat)
+        - `cp` 0.422559 (korelasi Positif Kuat)
+        - `thalach` 0.432211 (korelasi Positif Kuat)
 
         Jadi, dari data korelasi diatas faktor yang paling berpengaruh terhadap penyakit jantung ialah, sebagai berikut:
 
@@ -355,12 +355,12 @@ elif nav == "Exploratory Data Analysis":
         - `cp` (Semakin tinggi tipe Jenis rasa sakit pada dada, maka resiko terkena penyakit jantung semakin tinggi)
          - `thalach` (semakin tinggi detak jantung maksimum yang dicapai pasien selama tes latihan, maka resiko terkena penyakit jantung semakin tinggi)
         ''')
-         st.write('''
+        st.write('''
         **Correlation Heatmap**
             
         Berikut adalah hasil korelasi antar feature.
         ''')
-         st.image("https://drive.google.com/uc?id=1cFri-3vAHWqj0HCsCZNksarhw5QaUkTZ", width=700)
+        st.image("https://drive.google.com/uc?id=1cFri-3vAHWqj0HCsCZNksarhw5QaUkTZ", width=700)
         st.write('''
         **Kesimpulan :**
 
@@ -377,16 +377,16 @@ elif nav == "Exploratory Data Analysis":
          Sebelum melakukan PCA, kita akan melakukan scaling terlebih dahulu. Karena PCA membutuhkan data yang sudah di scaling.
         sesudah itu kita akan membuat eigen value analysis dan Cumulative Explained Variance untuk mengetahui berapa banyak komponen yang akan kita gunakan.
         ''')
-         st.write('''**Graph cummulative explained variance**''')
-         st.image("https://drive.google.com/uc?id=1Rv5nCXEeeCDesOPjRJlmh4uLtt-iSfZB", width=700)
-         st.write('''Dari plot, kita dapat melihat bahwa 9 komponen utama pertama menjelaskan sekitar 90% variasi. Berdasarkan grafik ini, 
-         kita dapat memutuskan berapa banyak komponen utama yang ingin kita miliki tergantung pada variabilitas yang dijelaskan.''')
-         st.write('''**Eigen Value Analysis**''')
-         st.image("https://drive.google.com/uc?id=1s43MppdOHSbwuJgsIqc1B4-htbNPqDyq", width=700)
-         st.write('''Pada awalnya, setiap komponen utama memberikan kontribusi yang signifikan terhadap total varians. 
-         Namun, saat Anda bergerak ke komponen utama berikutnya, penurunan dalam varians yang dijelaskan oleh setiap komponen mungkin mulai berkurang.
-         Poin "patah" atau "puncak" pada Scree Plot menunjukkan titik di mana penurunan ini melambat secara signifikan, 
-         dan komponen berikutnya memberikan kontribusi yang lebih kecil terhadap total varians''')
+        st.write('''**Graph cummulative explained variance**''')
+        st.image("https://drive.google.com/uc?id=1Rv5nCXEeeCDesOPjRJlmh4uLtt-iSfZB", width=700)
+        st.write('''Dari plot, kita dapat melihat bahwa 9 komponen utama pertama menjelaskan sekitar 90% variasi. Berdasarkan grafik ini, 
+        kita dapat memutuskan berapa banyak komponen utama yang ingin kita miliki tergantung pada variabilitas yang dijelaskan.''')
+        st.write('''**Eigen Value Analysis**''')
+        st.image("https://drive.google.com/uc?id=1s43MppdOHSbwuJgsIqc1B4-htbNPqDyq", width=700)
+        st.write('''Pada awalnya, setiap komponen utama memberikan kontribusi yang signifikan terhadap total varians. 
+        Namun, saat Anda bergerak ke komponen utama berikutnya, penurunan dalam varians yang dijelaskan oleh setiap komponen mungkin mulai berkurang.
+        Poin "patah" atau "puncak" pada Scree Plot menunjukkan titik di mana penurunan ini melambat secara signifikan, 
+        dan komponen berikutnya memberikan kontribusi yang lebih kecil terhadap total varians''')
 
     st.write('''
      ***Kesimpulan :***
